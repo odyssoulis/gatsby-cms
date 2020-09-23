@@ -23,13 +23,16 @@
     "gatsby-remark-responsive-iframe": "^2.4.13",
     "gatsby-remark-smartypants": "^2.3.10",
     "gatsby-source-filesystem": "^2.3.28",
+    "gatsby-source-strapi": "^0.0.12",
     "gatsby-transformer-remark": "^2.8.33",
     "gatsby-transformer-sharp": "^2.5.14",
     "prismjs": "^1.21.0",
     "react": "^16.12.0",
     "react-dom": "^16.12.0",
     "react-helmet": "^5.2.1",
+    "react-markdown": "^4.3.1",
     "react-typography": "^0.16.19",
+    "styled-components": "^5.2.0",
     "typeface-merriweather": "0.0.72",
     "typeface-montserrat": "0.0.75",
     "typography": "^0.16.19",
@@ -55,6 +58,7 @@
     "start": "npm run develop",
     "serve": "gatsby serve",
     "clean": "gatsby clean",
+    "heroku-postbuild": "gatsby clean && gatsby develop",
     "test": "echo \"Write tests! -> https://gatsby.dev/unit-testing\" && exit 1"
   }
 }

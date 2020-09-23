@@ -1,3 +1,5 @@
+require("dotenv").config()
+
 module.exports = {
   siteMetadata: {
     title: `Gatsby Starter Blog`,
@@ -74,6 +76,23 @@ module.exports = {
       resolve: `gatsby-plugin-typography`,
       options: {
         pathToConfigModule: `src/utils/typography`,
+      },
+    },
+    {
+      resolve: `gatsby-source-strapi`,
+      options: {
+        apiURL: process.env.NODE_ENV === 'development'
+          ? 'http://localhost:1337'
+          : process.env.STRAPI_URL,
+        queryLimit: 1000, // Default to 100
+        contentTypes: [`page`],
+        //If using single types place them in this array.
+        singleTypes: [`home-page`],
+        // Possibility to login with a strapi user, when content types are not publically available (optional).
+        // loginData: {
+        //   identifier: process.env.STRAPI_USER,
+        //   password: process.env.STRAPI_PASSWORD,
+        // },
       },
     },
     // this (optional) plugin enables Progressive Web App + Offline functionality
