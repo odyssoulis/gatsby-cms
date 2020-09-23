@@ -58,7 +58,7 @@
     "start": "npm run develop",
     "serve": "gatsby serve",
     "clean": "gatsby clean",
-    "heroku-postbuild": "gatsby clean && gatsby develop",
+    "heroku-postbuild": "gatsby clean && NODE_ENV=production gatsby develop",
     "test": "echo \"Write tests! -> https://gatsby.dev/unit-testing\" && exit 1"
   }
 }
