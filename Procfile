@@ -1,1 +1,1 @@
-web: npm run start -- --port 3000
+web: npm run start
