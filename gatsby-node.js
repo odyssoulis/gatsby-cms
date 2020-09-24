@@ -9,7 +9,7 @@ exports.createPages = async ({ graphql, actions }) => {
   const getTemplate = slug => {
     switch(slug) {
       case "/": return path.resolve('./src/templates/homepage.js')
-      default: return blogPost;
+      default: return path.resolve('./src/templates/page.js')
     }
   }
   
@@ -18,7 +18,7 @@ exports.createPages = async ({ graphql, actions }) => {
       {
         allStrapiPage {
           nodes {
-            Title
+            slug
           }
         }
       }
@@ -30,7 +30,7 @@ exports.createPages = async ({ graphql, actions }) => {
   }
 
   // Create blog posts pages.
-  const allStrapiPages = result.data.allStrapiPage.nodes.map(node => node.Title);
+  const allStrapiPages = result.data.allStrapiPage.nodes.map(({slug}) => slug);
 
   allStrapiPages.forEach((slug) => {
     createPage({
