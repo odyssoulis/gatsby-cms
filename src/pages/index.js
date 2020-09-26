@@ -55,7 +55,7 @@ const BlogIndex = ({ data }) => {
           <source src={`${data.strapiHomePage.backgroundVideo.publicURL}`} type="video/mp4" />
         </FullScreenVideo >
       </div>
-      <div style={{position: 'absolute', bottom: 0, right: 0, color: 'white', padding: 40}}>
+      <div style={{position: 'absolute', top: 0, right: 0, color: 'white', padding: 40}}>
         <ReactMarkdown source={data.strapiHomePage.text} />
         <button
           style={{
