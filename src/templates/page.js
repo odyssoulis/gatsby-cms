@@ -9,28 +9,62 @@ import { rhythm, scale } from "../utils/typography"
 const Grid = styled.div`
   display: grid;
   grid-template-columns: repeat(12, 1fr);
-  grid-template-rows: repeat(2, 1fr);
 `;
 
-const GridComponent = ({GridDescription, widthPercentage, height}) => {
-  console.log(GridDescription);
+const ImageWithCaption = (gridItem) => {
+  console.log(gridItem);
   return (
-    <Grid style={{height}}>
-      {GridDescription.map(gridItem => (
-        <div style={{
-          gridRowStart: gridItem.row_start,
-          gridRowEnd: gridItem.row_end,
-          gridColumnStart: gridItem.column_start,
-          gridColumnEnd: gridItem.column_start,
-          background: 'orange',
-          color: '#191414',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center'
-        }}>
-          {gridItem.options.text}
-        </div>
-      ))}
+    <div>
+      <img src={gridItem.mediaURL} />
+      <p>{gridItem.options.caption}</p>
+    </div>
+  )
+}
+
+const Text = (gridItem) => {
+  return (
+    <>
+      <p>{gridItem.options.text}</p> 
+    </>
+  )
+}
+const getGridItemComponent = (type) => {
+  switch(type) {
+    case "imageWithCaption": return ImageWithCaption;
+    case "text": return Text;
+    default: return Default;
+  }
+}
+
+const GridComponent = ({GridDescription, widthPercentage, height, media, mediaType}) => {
+  console.log(media);
+  const rows = GridDescription.reduce((rows, gd) => Math.max(rows, gd.row_end), 0);
+  return (
+    <Grid
+      style={{
+        width: `${widthPercentage}%`,
+        height,
+        gridTemplateRows: `repeat(${rows}, 1fr)`
+      }}
+    >
+      {GridDescription.map(gridItem => {
+        const Component = getGridItemComponent(gridItem.type);
+        return (
+          <div style={{
+            gridRowStart: gridItem.row_start,
+            gridRowEnd: gridItem.row_end + 1,
+            gridColumnStart: gridItem.column_start,
+            gridColumnEnd: gridItem.column_end + 1,
+            background: 'orange',
+            color: '#191414',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center'
+          }}>
+            <Component {...gridItem} {...gridItem.type === 'imageWithCaption' ? {mediaURL: media[gridItem.options.mediaIndex].url} : {}}/>
+          </div>
+        )
+      })}
     </Grid>
   );
 }
@@ -51,10 +85,12 @@ const BlogPostTemplate = ({ data }) => {
   return (
     <div>
       {`THIS IS PAGE ${data.strapiPage.Title}`}
-      {data.strapiPage.sections.map(section => {
-        const Component = getSectionComponent(section.type)
-        return <Component {...section} key={section.id}/>
-      })}
+      <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
+        {data.strapiPage.sections.map(section => {
+          const Component = getSectionComponent(section.type)
+          return <Component {...section} key={section.id}/>
+        })}
+      </div>
     </div>
   )
 }
@@ -82,10 +118,16 @@ export const pageQuery = graphql`
           type
           options {
             text
+            mediaIndex
+            caption
           }
         }
         widthPercentage
         height
+        media {
+          url
+        }
+        mediaType
       }
     }
   }
