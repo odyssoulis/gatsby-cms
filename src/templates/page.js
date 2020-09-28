@@ -20,15 +20,22 @@ const ImageContained = styled(Img)`
 `;
 
 const ImageWithCaption = (gridItem) => {
-  console.log(gridItem.media);
+  console.log(gridItem);
   return (
     <div style={{display: 'flex', flexDirection: 'column', height: '100%', width: '100%'}}>
       {/* <div style={{flex: 1}}> */}
-      <ImageContained
-          // Tag="section"
-          fluid={gridItem.media.childImageSharp.fluid}
-          // backgroundColor={`#040e18`}
-        />
+      {gridItem.options.mediaType === 'video'
+        ? <video style={{width: '100%', height: 'auto'}} autoPlay muted loop>
+            <source src={`${gridItem.media.publicURL}`} type="video/mp4" />
+          </video>
+        :
+          <ImageContained
+            // Tag="section"
+            fluid={gridItem.media.childImageSharp.fluid}
+            // backgroundColor={`#040e18`}
+          />
+      
+      }
           {/* <h2>gatsby-background-image</h2> */}
         {/* </BackgroundImage> */}
       {/* <Img fluid={gridItem.media.childImageSharp.fluid} /> */}
@@ -55,7 +62,6 @@ const getGridItemComponent = (type) => {
 
 const GridComponent = ({GridDescription, widthPercentage, height, mediaFile_1, mediaFile_2, mediaType}) => {
   const media = [mediaFile_1, mediaFile_2];
-  console.log(media)
   const rows = GridDescription.reduce((rows, gd) => Math.max(rows, gd.row_end), 0);
   return (
     <Grid
@@ -65,20 +71,23 @@ const GridComponent = ({GridDescription, widthPercentage, height, mediaFile_1, m
         gridTemplateRows: `repeat(${rows}, 1fr)`
       }}
     >
-      {GridDescription.map(gridItem => {
+      {GridDescription.map((gridItem, index) => {
         const Component = getGridItemComponent(gridItem.type);
         return (
-          <div style={{
-            gridRowStart: gridItem.row_start,
-            gridRowEnd: gridItem.row_end + 1,
-            gridColumnStart: gridItem.column_start,
-            gridColumnEnd: gridItem.column_end + 1,
-            background: 'orange',
-            color: '#191414',
-            // display: 'flex',
-            // alignItems: 'center',
-            // justifyContent: 'center'
-          }}>
+          <div
+            key={index}
+            style={{
+              gridRowStart: gridItem.row_start,
+              gridRowEnd: gridItem.row_end + 1,
+              gridColumnStart: gridItem.column_start,
+              gridColumnEnd: gridItem.column_end + 1,
+              background: 'orange',
+              color: '#191414',
+              // display: 'flex',
+              // alignItems: 'center',
+              // justifyContent: 'center'
+            }}
+          >
             <Component {...gridItem} {...gridItem.type === 'imageWithCaption' ? {media: media[gridItem.options.mediaFileIndex - 1]} : {}}/>
           </div>
         )
@@ -106,7 +115,7 @@ const BlogPostTemplate = ({ data }) => {
       <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
         {data.strapiPage.sections.map(section => {
           const Component = getSectionComponent(section.type)
-          return <Component {...section} key={section.id}/>
+          return <Component {...section} key={`${section.type}/${section.id}`}/>
         })}
       </div>
     </div>
@@ -135,8 +144,9 @@ export const pageQuery = graphql`
           row_start
           type
           options {
-            text
             mediaFileIndex
+            mediaType
+            mediaExtension
             caption
           }
         }
@@ -148,6 +158,7 @@ export const pageQuery = graphql`
               ...GatsbyImageSharpFluid
             }
           }
+          publicURL
         }
         mediaFile_2 {
           childImageSharp {
@@ -155,6 +166,7 @@ export const pageQuery = graphql`
               ...GatsbyImageSharpFluid
             }
           }
+          publicURL
         }
         # mediaFile_3 {
         #   childImageSharp {
