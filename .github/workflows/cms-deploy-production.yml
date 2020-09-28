@@ -1,6 +1,8 @@
 name: Deploy-from-CMS
 
-on: workflow_dispatch
+on:
+  workflow_dispatch
+  
 
 jobs:
   build:
