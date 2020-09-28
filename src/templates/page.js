@@ -1,22 +1,39 @@
 import React from "react"
 import { Link, graphql } from "gatsby"
+import Img from 'gatsby-image'
 import styled from 'styled-components'
 import Bio from "../components/bio"
 import Layout from "../components/layout"
 import SEO from "../components/seo"
 import { rhythm, scale } from "../utils/typography"
+import BackgroundImage from 'gatsby-background-image'
 
 const Grid = styled.div`
   display: grid;
   grid-template-columns: repeat(12, 1fr);
 `;
 
+const ImageContained = styled(Img)`
+  & > picture > img {
+    object-fit: contain !important;
+  }
+`;
+
 const ImageWithCaption = (gridItem) => {
-  console.log(gridItem);
+  console.log(gridItem.media);
   return (
-    <div>
-      <img src={gridItem.mediaURL} />
-      <p>{gridItem.options.caption}</p>
+    <div style={{display: 'flex', flexDirection: 'column', height: '100%', width: '100%'}}>
+      {/* <div style={{flex: 1}}> */}
+      <ImageContained
+          // Tag="section"
+          fluid={gridItem.media.childImageSharp.fluid}
+          // backgroundColor={`#040e18`}
+        />
+          {/* <h2>gatsby-background-image</h2> */}
+        {/* </BackgroundImage> */}
+      {/* <Img fluid={gridItem.media.childImageSharp.fluid} /> */}
+      {/* </div> */}
+      <p style={{height: 100}}>{gridItem.options.caption}</p>
     </div>
   )
 }
@@ -36,8 +53,9 @@ const getGridItemComponent = (type) => {
   }
 }
 
-const GridComponent = ({GridDescription, widthPercentage, height, media, mediaType}) => {
-  console.log(media);
+const GridComponent = ({GridDescription, widthPercentage, height, mediaFile_1, mediaFile_2, mediaType}) => {
+  const media = [mediaFile_1, mediaFile_2];
+  console.log(media)
   const rows = GridDescription.reduce((rows, gd) => Math.max(rows, gd.row_end), 0);
   return (
     <Grid
@@ -57,11 +75,11 @@ const GridComponent = ({GridDescription, widthPercentage, height, media, mediaTy
             gridColumnEnd: gridItem.column_end + 1,
             background: 'orange',
             color: '#191414',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center'
+            // display: 'flex',
+            // alignItems: 'center',
+            // justifyContent: 'center'
           }}>
-            <Component {...gridItem} {...gridItem.type === 'imageWithCaption' ? {mediaURL: media[gridItem.options.mediaIndex].url} : {}}/>
+            <Component {...gridItem} {...gridItem.type === 'imageWithCaption' ? {media: media[gridItem.options.mediaFileIndex - 1]} : {}}/>
           </div>
         )
       })}
@@ -118,15 +136,33 @@ export const pageQuery = graphql`
           type
           options {
             text
-            mediaIndex
+            mediaFileIndex
             caption
           }
         }
         widthPercentage
         height
-        media {
-          url
+        mediaFile_1 {
+          childImageSharp {
+            fluid(maxWidth: 960) {
+              ...GatsbyImageSharpFluid
+            }
+          }
         }
+        mediaFile_2 {
+          childImageSharp {
+            fluid(maxWidth: 960) {
+              ...GatsbyImageSharpFluid
+            }
+          }
+        }
+        # mediaFile_3 {
+        #   childImageSharp {
+        #     fluid(maxWidth: 960) {
+        #       ...GatsbyImageSharpFluid
+        #     }
+        #   }
+        # }
         mediaType
       }
     }
