@@ -15,7 +15,7 @@ const Grid = styled.div`
 
 const ImageContained = styled(Img)`
   & > picture > img {
-    object-fit: contain !important;
+    object-fit: cover !important;
   }
 `;
 
@@ -40,7 +40,7 @@ const ImageWithCaption = (gridItem) => {
         {/* </BackgroundImage> */}
       {/* <Img fluid={gridItem.media.childImageSharp.fluid} /> */}
       {/* </div> */}
-      <p style={{height: 100}}>{gridItem.options.caption}</p>
+      {/* <p style={{height: 100}}>{gridItem.options.caption}</p> */}
     </div>
   )
 }
@@ -50,6 +50,28 @@ const Text = (gridItem) => {
     <>
       <p>{gridItem.options.text}</p> 
     </>
+  )
+}
+
+const CTAButton = styled(Link)`
+  height: 40px;
+  padding: 0 12px;
+  display: flex;
+  border-radius: 4px;
+  align-items: center;
+  text-decoration: none;
+  box-shadow: none;
+`;
+
+const CTA = ({Title, Description, link, buttonBackground, buttonTextColor, buttonText}) => {
+  return (
+    <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%', margin: '48px 0'}}>
+      <h3>{Title}</h3>
+      <p>{Description}</p>
+      <CTAButton to={link} style={{backgroundColor: buttonBackground, color: buttonTextColor}}>
+        {buttonText}
+      </CTAButton>
+    </div>
   )
 }
 const getGridItemComponent = (type) => {
@@ -81,7 +103,7 @@ const GridComponent = ({GridDescription, widthPercentage, height, mediaFile_1, m
               gridRowEnd: gridItem.row_end + 1,
               gridColumnStart: gridItem.column_start,
               gridColumnEnd: gridItem.column_end + 1,
-              background: 'orange',
+              // background: 'orange',
               color: '#191414',
               // display: 'flex',
               // alignItems: 'center',
@@ -101,6 +123,7 @@ const Default = () => <>I am a default component</>;
 const getSectionComponent = (type) => {
   switch(type) {
     case "grid": return GridComponent;
+    case "cta": return CTA;
     default: return Default;
   }
 }
@@ -108,12 +131,13 @@ const BlogPostTemplate = ({ data }) => {
   // const post = data.markdownRemark
   // const siteTitle = data.site.siteMetadata.title
   // const { previous, next } = pageContext
-
+  const {strapiPage : {sections}} = data;
+  console.log(sections);
   return (
     <div>
       {`THIS IS PAGE ${data.strapiPage.Title}`}
       <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
-        {data.strapiPage.sections.map(section => {
+        {sections.map(section => {
           const Component = getSectionComponent(section.type)
           return <Component {...section} key={`${section.type}/${section.id}`}/>
         })}

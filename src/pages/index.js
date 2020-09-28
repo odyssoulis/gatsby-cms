@@ -6,6 +6,8 @@ import Layout from "../components/layout"
 import SEO from "../components/seo"
 import useResize from "../hooks/useResize";
 import {version} from "react-dom";
+import remarkSubSuper from 'remark-sub-super';
+import ReactHtmlParser from 'react-html-parser';
 
 const FullScreenVideo = styled.video`
 	position: fixed;
@@ -43,6 +45,7 @@ const BlogIndex = ({ data }) => {
 
   return (
     <div style={{position: 'absolute', width: '100%', height: '100%', top: 0, left: 0, overflow: 'hidden'}}>
+      {console.log(data.strapiHomePage.text)}
       <div style={{width: '100vw', height: '100vh'}}>
         <FullScreenVideo controls autoPlay muted loop ref={videoRef}
           style={{
@@ -56,7 +59,7 @@ const BlogIndex = ({ data }) => {
         </FullScreenVideo >
       </div>
       <div style={{position: 'absolute', bottom: 0, right: 0, color: 'white', padding: 40}}>
-        <ReactMarkdown source={data.strapiHomePage.text} />
+        <div>{ReactHtmlParser(data.strapiHomePage.text)}</div>
         <button
           style={{
             borderRadius: 8,
