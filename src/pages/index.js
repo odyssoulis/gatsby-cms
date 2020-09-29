@@ -1,9 +1,11 @@
 import React from "react"
 import {graphql} from "gatsby"
+import axios from 'axios'
 import styled from 'styled-components';
 import ReactMarkdown from 'react-markdown';
 import Layout from "../components/layout"
-import SEO from "../components/seo"
+import SEO from "../components/seo";
+import Map from "../components/map";
 import useResize from "../hooks/useResize";
 import {version} from "react-dom";
 import remarkSubSuper from 'remark-sub-super';
@@ -21,6 +23,8 @@ const BlogIndex = ({ data }) => {
   const [windowHeight, setWindowHeight] = React.useState(1);
   const [videoWidth, setVideoWidth] = React.useState(0);
   const [videoHeight, setVideoHeight] = React.useState(0);
+  const [firstName, setFirstName] = React.useState('')
+  const [lastName, setLastName] = React.useState('')
   const resizeTrigger = useResize();
   const videoRef = React.useRef();
   
@@ -42,12 +46,26 @@ const BlogIndex = ({ data }) => {
     }
   }, [windowAspectRatio])
   
-
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    axios.post('http://localhost:5000/', {
+      firstName,
+      lastName
+    })
+    .then(function (response) {
+      setFirstName('')
+      setLastName('')
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+  }
+  console.log(windowAspectRatio, videoAspectRatio);
   return (
-    <div style={{position: 'absolute', width: '100%', height: '100%', top: 0, left: 0, overflow: 'hidden'}}>
-      {console.log(data.strapiHomePage.text)}
-      <div style={{width: '100vw', height: '100vh'}}>
-        <FullScreenVideo controls autoPlay muted loop ref={videoRef}
+    <div>
+      {/* {console.log(data.strapiHomePage.text)} */}
+      <div style={{width: '100vw', height: '100vh', position: 'relative', overflow: 'hidden'}}>
+        <FullScreenVideo autoPlay muted loop ref={videoRef}
           style={{
             width: videoWidth,
             height: videoHeight,
@@ -57,21 +75,47 @@ const BlogIndex = ({ data }) => {
         >
           <source src={`${data.strapiHomePage.backgroundVideo.publicURL}`} type="video/mp4" />
         </FullScreenVideo >
-      </div>
-      <div style={{position: 'absolute', bottom: 0, right: 0, color: 'white', padding: 40}}>
-        <div>{ReactHtmlParser(data.strapiHomePage.text)}</div>
-        <button
-          style={{
-            borderRadius: 8,
-            border: 'none',
-            padding: '4px 8px',
-            backgroundColor: data.strapiHomePage.buttonColor,
-          }}
-        >
-          {data.strapiHomePage.buttonText}
-        </button>
+        <div style={{position: 'absolute', bottom: 0, right: 0, color: 'white', padding: 40}}>
+          <div>{ReactHtmlParser(data.strapiHomePage.text)}</div>
+          <button
+            style={{
+              borderRadius: 8,
+              border: 'none',
+              padding: '4px 8px',
+              backgroundColor: data.strapiHomePage.buttonColor,
+            }}
+          >
+            {data.strapiHomePage.buttonText}
+          </button>
+        </div>
       </div>
       <SEO title="Home" />
+      <div style={{height: 500, width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+        <form onSubmit={handleSubmit}>
+          <label>
+            First name
+            <input
+              type="text"
+              name="firstName"
+              value={firstName}
+              onChange={e => setFirstName(e.target.value)}
+            />
+          </label>
+          <label>
+            Last name
+            <input
+              type="text"
+              name="lastName"
+              value={lastName}
+              onChange={e => setLastName(e.target.value)}
+            />
+          </label>
+          <button type="submit">Submit</button>
+        </form>
+      </div>
+      <div style={{height: 1000, width: '100%'}}>
+          <Map />
+      </div>
     </div>
   )
 }

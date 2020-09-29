@@ -46,6 +46,7 @@ const ImageWithCaption = (gridItem) => {
 }
 
 const Text = (gridItem) => {
+  console.log(gridItem);
   return (
     <>
       <p>{gridItem.options.text}</p> 
@@ -85,6 +86,7 @@ const getGridItemComponent = (type) => {
 const GridComponent = ({GridDescription, widthPercentage, height, mediaFile_1, mediaFile_2, mediaType}) => {
   const media = [mediaFile_1, mediaFile_2];
   const rows = GridDescription.reduce((rows, gd) => Math.max(rows, gd.row_end), 0);
+  console.log(GridDescription);
   return (
     <Grid
       style={{
@@ -103,11 +105,11 @@ const GridComponent = ({GridDescription, widthPercentage, height, mediaFile_1, m
               gridRowEnd: gridItem.row_end + 1,
               gridColumnStart: gridItem.column_start,
               gridColumnEnd: gridItem.column_end + 1,
-              // background: 'orange',
+              background: 'orange',
               color: '#191414',
-              // display: 'flex',
-              // alignItems: 'center',
-              // justifyContent: 'center'
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center'
             }}
           >
             <Component {...gridItem} {...gridItem.type === 'imageWithCaption' ? {media: media[gridItem.options.mediaFileIndex - 1]} : {}}/>
@@ -132,7 +134,6 @@ const BlogPostTemplate = ({ data }) => {
   // const siteTitle = data.site.siteMetadata.title
   // const { previous, next } = pageContext
   const {strapiPage : {sections}} = data;
-  console.log(sections);
   return (
     <div>
       {`THIS IS PAGE ${data.strapiPage.Title}`}
@@ -172,6 +173,7 @@ export const pageQuery = graphql`
             mediaType
             mediaExtension
             caption
+            text
           }
         }
         widthPercentage
