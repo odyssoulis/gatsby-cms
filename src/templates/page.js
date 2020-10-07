@@ -20,7 +20,6 @@ const ImageContained = styled(Img)`
 `;
 
 const ImageWithCaption = (gridItem) => {
-  console.log(gridItem);
   return (
     <div style={{display: 'flex', flexDirection: 'column', height: '100%', width: '100%'}}>
       {/* <div style={{flex: 1}}> */}
@@ -86,7 +85,6 @@ const getGridItemComponent = (type) => {
 const GridComponent = ({GridDescription, widthPercentage, height, mediaFile_1, mediaFile_2, mediaType}) => {
   const media = [mediaFile_1, mediaFile_2];
   const rows = GridDescription.reduce((rows, gd) => Math.max(rows, gd.row_end), 0);
-  console.log(GridDescription);
   return (
     <Grid
       style={{
@@ -134,11 +132,14 @@ const BlogPostTemplate = ({ data }) => {
   // const siteTitle = data.site.siteMetadata.title
   // const { previous, next } = pageContext
   const {strapiPage : {sections}} = data;
+  const [shown, setShown] = React.useState(sections);
+  console.log(sections);
   return (
     <div>
       {`THIS IS PAGE ${data.strapiPage.Title}`}
+      <button onClick={() => setShown(shown.filter(s => s.type !== "cta"))}>filter cta</button>
       <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
-        {sections.map(section => {
+        {shown.map(section => {
           const Component = getSectionComponent(section.type)
           return <Component {...section} key={`${section.type}/${section.id}`}/>
         })}
@@ -162,38 +163,29 @@ export const pageQuery = graphql`
         buttonTextColor
         id
         link
-        GridDescription {
-          column_end
-          column_start
-          row_end
-          row_start
-          type
-          options {
-            mediaFileIndex
-            mediaType
-            mediaExtension
-            caption
-            text
-          }
-        }
-        widthPercentage
-        height
-        mediaFile_1 {
-          childImageSharp {
-            fluid(maxWidth: 960) {
-              ...GatsbyImageSharpFluid
-            }
-          }
-          publicURL
-        }
-        mediaFile_2 {
-          childImageSharp {
-            fluid(maxWidth: 960) {
-              ...GatsbyImageSharpFluid
-            }
-          }
-          publicURL
-        }
+        # GridDescription {
+        #   options {
+        #     caption
+        #   }
+        # }
+        # widthPercentage
+        # height
+        # mediaFile_1 {
+        #   childImageSharp {
+        #     fluid(maxWidth: 960) {
+        #       ...GatsbyImageSharpFluid
+        #     }
+        #   }
+        #   publicURL
+        # }
+        # mediaFile_2 {
+        #   childImageSharp {
+        #     fluid(maxWidth: 960) {
+        #       ...GatsbyImageSharpFluid
+        #     }
+        #   }
+        #   publicURL
+        # }
         # mediaFile_3 {
         #   childImageSharp {
         #     fluid(maxWidth: 960) {
@@ -201,7 +193,7 @@ export const pageQuery = graphql`
         #     }
         #   }
         # }
-        mediaType
+        # mediaType
       }
     }
   }

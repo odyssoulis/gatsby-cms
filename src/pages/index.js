@@ -10,6 +10,7 @@ import useResize from "../hooks/useResize";
 import {version} from "react-dom";
 import remarkSubSuper from 'remark-sub-super';
 import ReactHtmlParser from 'react-html-parser';
+import YouTube from 'react-youtube';
 
 const FullScreenVideo = styled.video`
 	position: fixed;
@@ -60,7 +61,15 @@ const BlogIndex = ({ data }) => {
       console.log(error);
     });
   }
-  console.log(windowAspectRatio, videoAspectRatio);
+  const opts = {
+    height: '390',
+    width: '640',
+    playerVars: {
+      // https://developers.google.com/youtube/player_parameters
+      autoplay: 1,
+    },
+  };
+
   return (
     <div>
       {/* {console.log(data.strapiHomePage.text)} */}
@@ -116,6 +125,7 @@ const BlogIndex = ({ data }) => {
       <div style={{height: 1000, width: '100%'}}>
           <Map />
       </div>
+      <YouTube videoId="2g811Eo7K8U" opts={opts} /* onReady={this._onReady} */ />
     </div>
   )
 }

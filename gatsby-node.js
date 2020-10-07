@@ -70,3 +70,22 @@ exports.onCreatePage = async ({ page, actions }) => {
     createPage(page)
   }
 }
+
+exports.onCreateWebpackConfig = ({ stage, actions, loaders }) => {
+  if (stage === 'build-html') {
+    actions.setWebpackConfig({
+      module: {
+        rules: [
+          {
+            test: /react-editor-js/,
+            use: loaders.null(),
+          },
+          {
+            test: /@editorjs/,
+            use: loaders.null(),
+          },
+        ],
+      },
+    });
+  }
+};
