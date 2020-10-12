@@ -73,6 +73,14 @@ module.exports = {
       },
     },
     `gatsby-plugin-react-helmet`,
+    // {
+    //   resolve: 'gatsby-source-graphql',
+    //   options: {
+    //     typeName: 'STRAPI',
+    //     fieldName: 'strapi',
+    //     url: `http://localhost:1337/graphql`,
+    //   },
+    // },
     {
       resolve: `gatsby-plugin-typography`,
       options: {

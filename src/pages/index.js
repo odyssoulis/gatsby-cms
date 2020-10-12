@@ -92,6 +92,7 @@ const BlogIndex = ({ data }) => {
               border: 'none',
               padding: '4px 8px',
               backgroundColor: data.strapiHomePage.buttonColor,
+              cursor: 'pointer'
             }}
           >
             {data.strapiHomePage.buttonText}
@@ -99,33 +100,6 @@ const BlogIndex = ({ data }) => {
         </div>
       </div>
       <SEO title="Home" />
-      <div style={{height: 500, width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
-        <form onSubmit={handleSubmit}>
-          <label>
-            First name
-            <input
-              type="text"
-              name="firstName"
-              value={firstName}
-              onChange={e => setFirstName(e.target.value)}
-            />
-          </label>
-          <label>
-            Last name
-            <input
-              type="text"
-              name="lastName"
-              value={lastName}
-              onChange={e => setLastName(e.target.value)}
-            />
-          </label>
-          <button type="submit">Submit</button>
-        </form>
-      </div>
-      <div style={{height: 1000, width: '100%'}}>
-          <Map />
-      </div>
-      <YouTube videoId="2g811Eo7K8U" opts={opts} /* onReady={this._onReady} */ />
     </div>
   )
 }

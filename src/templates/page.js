@@ -155,14 +155,29 @@ export const pageQuery = graphql`
     strapiPage(slug: {eq: $slug}) {
       Title
       sections {
-        type
-        Description
-        Title
-        buttonBackground
-        buttonText
-        buttonTextColor
-        id
-        link
+          # title
+          Description
+          # image {
+          #   url
+          #   imageFile {
+          #     childImageSharp {
+          #       fluid {
+          #           ...GatsbyImageSharpFluid
+          #       }
+          #     }
+          #   }
+          # }
+        # }
+      }
+      # sections {
+      #   type
+      #   Description
+      #   Title
+      #   buttonBackground
+      #   buttonText
+      #   buttonTextColor
+      #   id
+      #   link
         # GridDescription {
         #   options {
         #     caption
@@ -194,7 +209,7 @@ export const pageQuery = graphql`
         #   }
         # }
         # mediaType
-      }
+      # }
     }
   }
 `
