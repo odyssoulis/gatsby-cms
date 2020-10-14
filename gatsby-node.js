@@ -1,10 +1,10 @@
 const path = require(`path`)
-const { createFilePath } = require(`gatsby-source-filesystem`)
+const { createFilePath, createRemoteFileNode } = require(`gatsby-source-filesystem`)
 
 exports.createPages = async ({ graphql, actions }) => {
   const { createPage } = actions
   
-  const blogPost = path.resolve(`./src/templates/blog-post.js`)
+  // const blogPost = path.resolve(`./src/templates/blog-post.js`)
   
   const getTemplate = slug => {
     switch(slug) {
@@ -16,11 +16,12 @@ exports.createPages = async ({ graphql, actions }) => {
   const result = await graphql(
     `
       {
-        allStrapiPage {
-          nodes {
+        strapi {
+          pages {
             slug
+            id
           }
-        }
+        } 
       }
     `
   )
@@ -30,14 +31,15 @@ exports.createPages = async ({ graphql, actions }) => {
   }
 
   // Create blog posts pages.
-  const allStrapiPages = result.data.allStrapiPage.nodes.map(({slug}) => slug);
+  const allStrapiPages = result.data.strapi.pages;
 
-  allStrapiPages.forEach((slug) => {
+  allStrapiPages.forEach(({slug, id}) => {
     createPage({
       path: slug,
       component: getTemplate(slug),
       context: {
         slug,
+        id
       },
     })
   })
@@ -79,22 +81,22 @@ exports.createResolvers = async ({
     store,
     reporter,
 }) => {
-    const { createNode } = actions
-
+    const { createNode } = actions    
+    console.log('\n\n\n\n\n\n FASOULA \n\n\n\n\n\n\n')
     await createResolvers({
         STRAPI_UploadFile: {
             imageFile: {
                 type: 'File',
                 async resolve(source) {
-                    let sourceUrl = `YOUR_URL${source.url}`
-
+                    // let sourceUrl = `${source.url}`
+                    // console.log(`\n\n\n\n\n\n ${source.url} \n\n\n\n\n\n\n`)
                     return await createRemoteFileNode({
-                        url: sourceUrl,
-                        store,
-                        cache,
-                        createNode,
-                        createNodeId,
-                        reporter,
+                        source,
+                        // store,
+                        // cache,
+                        // createNode,
+                        // createNodeId,
+                        // reporter,
                     })
                 },
             },
@@ -120,3 +122,21 @@ exports.onCreateWebpackConfig = ({ stage, actions, loaders }) => {
     });
   }
 };
+
+exports.createSchemaCustomization = ({ actions }) => {
+  const { createTypes } = actions
+
+  const typeDefs = `
+    type strapi implements Node {
+      page: StrapiPage
+    }
+    type StrapiPage {
+      sections: Sections
+    }
+    type Sections {
+      Title: String
+      Description: String
+    }
+  `
+  createTypes(typeDefs)
+}

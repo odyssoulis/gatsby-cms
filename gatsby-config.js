@@ -73,35 +73,35 @@ module.exports = {
       },
     },
     `gatsby-plugin-react-helmet`,
-    // {
-    //   resolve: 'gatsby-source-graphql',
-    //   options: {
-    //     typeName: 'STRAPI',
-    //     fieldName: 'strapi',
-    //     url: `http://localhost:1337/graphql`,
-    //   },
-    // },
+    {
+      resolve: 'gatsby-source-graphql',
+      options: {
+        typeName: 'STRAPI',
+        fieldName: 'strapi',
+        url: `http://localhost:1337/graphql`,
+      },
+    },
     {
       resolve: `gatsby-plugin-typography`,
       options: {
         pathToConfigModule: `src/utils/typography`,
       },
     },
-    {
-      resolve: `gatsby-source-strapi`,
-      options: {
-        apiURL: process.env.STRAPI_URL,
-        queryLimit: 1000, // Default to 100
-        contentTypes: [`page`],
-        //If using single types place them in this array.
-        singleTypes: [`home-page`],
-        // Possibility to login with a strapi user, when content types are not publically available (optional).
-        // loginData: {
-        //   identifier: process.env.STRAPI_USER,
-        //   password: process.env.STRAPI_PASSWORD,
-        // },
-      },
-    },
+    // {
+    //   resolve: `gatsby-source-strapi`,
+    //   options: {
+    //     apiURL: process.env.STRAPI_URL,
+    //     queryLimit: 1000, // Default to 100
+    //     contentTypes: [`page`],
+    //     //If using single types place them in this array.
+    //     singleTypes: [`home-page`],
+    //     // Possibility to login with a strapi user, when content types are not publically available (optional).
+    //     // loginData: {
+    //     //   identifier: process.env.STRAPI_USER,
+    //     //   password: process.env.STRAPI_PASSWORD,
+    //     // },
+    //   },
+    // },
     // this (optional) plugin enables Progressive Web App + Offline functionality
     // To learn more, visit: https://gatsby.dev/offline
     // `gatsby-plugin-offline`,

@@ -72,7 +72,7 @@ const BlogIndex = ({ data }) => {
 
   return (
     <div>
-      {/* {console.log(data.strapiHomePage.text)} */}
+      {/* {console.log(data.strapi.homePage.text)} */}
       <div style={{width: '100vw', height: '100vh', position: 'relative', overflow: 'hidden'}}>
         <FullScreenVideo autoPlay muted loop ref={videoRef}
           style={{
@@ -82,20 +82,20 @@ const BlogIndex = ({ data }) => {
             top: windowAspectRatio > videoAspectRatio ? (windowHeight - videoHeight)/2 : 0
           }}
         >
-          <source src={`${data.strapiHomePage.backgroundVideo.publicURL}`} type="video/mp4" />
+          <source src={`${data.strapi.homePage.backgroundVideo.url}`} type="video/mp4" />
         </FullScreenVideo >
         <div style={{position: 'absolute', bottom: 0, right: 0, color: 'white', padding: 40}}>
-          <div>{ReactHtmlParser(data.strapiHomePage.text)}</div>
+          <div>{ReactHtmlParser(data.strapi.homePage.text)}</div>
           <button
             style={{
               borderRadius: 8,
               border: 'none',
               padding: '4px 8px',
-              backgroundColor: data.strapiHomePage.buttonColor,
+              backgroundColor: data.strapi.homePage.buttonColor,
               cursor: 'pointer'
             }}
           >
-            {data.strapiHomePage.buttonText}
+            {data.strapi.homePage.buttonText}
           </button>
         </div>
       </div>
@@ -108,13 +108,15 @@ export default BlogIndex
 
 export const homePageQuery = graphql`
   query {
-    strapiHomePage {
-      buttonColor
-      buttonText
-      text
-      slug
-      backgroundVideo {
-        publicURL
+    strapi {
+      homePage {
+        buttonColor
+        buttonText
+        text
+        slug
+        backgroundVideo {
+          url
+        }
       }
     }
   }

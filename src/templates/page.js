@@ -120,10 +120,18 @@ const GridComponent = ({GridDescription, widthPercentage, height, mediaFile_1, m
 
 const Default = () => <>I am a default component</>;
 
-const getSectionComponent = (type) => {
-  switch(type) {
-    case "grid": return GridComponent;
-    case "cta": return CTA;
+const Carousel = (props) => (
+  <div>
+    {/* {images.map(image => ( */}
+      <>{console.log(props)}</>
+      {/* <Img fluid={image.}> */}
+    {/* ))} */}
+  </div>
+)
+const getSectionComponent = (__typename) => {
+  switch(__typename) {
+    case "STRAPI_ComponentCarouselCarousel": return Carousel;
+    case "STRAPI_ComponentCtaCta": return CTA;
     default: return Default;
   }
 }
@@ -131,16 +139,16 @@ const BlogPostTemplate = ({ data }) => {
   // const post = data.markdownRemark
   // const siteTitle = data.site.siteMetadata.title
   // const { previous, next } = pageContext
-  const {strapiPage : {sections}} = data;
-  const [shown, setShown] = React.useState(sections);
+  const {strapi: {page: {sections, Title}}} = data;
+  const [shown, setShown] = React.useState(sections || []);
   console.log(sections);
   return (
     <div>
-      {`THIS IS PAGE ${data.strapiPage.Title}`}
-      <button onClick={() => setShown(shown.filter(s => s.type !== "cta"))}>filter cta</button>
+      {`THIS IS PAGE ${Title}`}
+      <button onClick={() => setShown(shown.filter(s => s.__typename !== "STRAPI_ComponentCtaCta"))}>filter cta</button>
       <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
         {shown.map(section => {
-          const Component = getSectionComponent(section.type)
+          const Component = getSectionComponent(section.__typename)
           return <Component {...section} key={`${section.type}/${section.id}`}/>
         })}
       </div>
@@ -151,65 +159,41 @@ const BlogPostTemplate = ({ data }) => {
 export default BlogPostTemplate
 
 export const pageQuery = graphql`
-  query($slug: String!) {
-    strapiPage(slug: {eq: $slug}) {
-      Title
-      sections {
-          # title
+  query GET_PAGE($id: ID!) {
+    strapi {
+      page(id: $id) {
+        id
+        Title
+        sections {
+        __typename
+        ... on STRAPI_ComponentCtaCta {
+          id
           Description
-          # image {
-          #   url
-          #   imageFile {
-          #     childImageSharp {
-          #       fluid {
-          #           ...GatsbyImageSharpFluid
-          #       }
-          #     }
-          #   }
-          # }
-        # }
+          Title
+          buttonBackground
+          buttonText
+          buttonTextColor
+          link
+        }
+        ... on STRAPI_ComponentTestimonialTestimonial {
+          id
+          Text
+          author {
+            name
+          }
+        }
+       ... on STRAPI_ComponentCarouselCarousel {
+          id
+          title
+          images {
+            id
+            imageFile {
+              source
+            }
+          }
+        }
       }
-      # sections {
-      #   type
-      #   Description
-      #   Title
-      #   buttonBackground
-      #   buttonText
-      #   buttonTextColor
-      #   id
-      #   link
-        # GridDescription {
-        #   options {
-        #     caption
-        #   }
-        # }
-        # widthPercentage
-        # height
-        # mediaFile_1 {
-        #   childImageSharp {
-        #     fluid(maxWidth: 960) {
-        #       ...GatsbyImageSharpFluid
-        #     }
-        #   }
-        #   publicURL
-        # }
-        # mediaFile_2 {
-        #   childImageSharp {
-        #     fluid(maxWidth: 960) {
-        #       ...GatsbyImageSharpFluid
-        #     }
-        #   }
-        #   publicURL
-        # }
-        # mediaFile_3 {
-        #   childImageSharp {
-        #     fluid(maxWidth: 960) {
-        #       ...GatsbyImageSharpFluid
-        #     }
-        #   }
-        # }
-        # mediaType
-      # }
     }
   }
+}
 `
